@@ -8,8 +8,11 @@ loadDB();
 
 export async function POST(request) {
   try {
-    const formData = await request.formData();
-    const emailData = { email: formData.get("email") };
+    // const formData = await request.formData();
+    const data = await request.json();
+
+    // const emailData = { email: formData.get("email") };
+    const emailData = { email: data.email };
     await Email.create(emailData);
     return NextResponse.json({
       success: true,
@@ -17,7 +20,7 @@ export async function POST(request) {
     });
   } catch (error) {
     console.log(error);
-    return NextResponse.json({ error }, { status: 500 });
+    return NextResponse.json({ success: false, error }, { status: 500 });
   }
 }
 export async function GET(request) {

@@ -2,6 +2,7 @@
 import SubsTableItem from "@/Components/AdminComponents/SubsTableItem";
 import axios from "axios";
 import { useEffect, useState } from "react";
+import { toast } from "react-toastify";
 
 const Page = () => {
   const [email, setEmail] = useState([]);
@@ -11,10 +12,9 @@ const Page = () => {
   };
 
   const deleteEmail = async (mongoId) => {
-    const response = await axios.delete("/app/api/email", {
+    const response = await axios.delete("/api/email", {
       params: { id: mongoId },
     });
-    // console.log(response.data.message);
     if (response.data.success) {
       toast.success(response.data.message);
       fetchEmail();
@@ -25,6 +25,7 @@ const Page = () => {
 
   useEffect(() => {
     axios.get("/api/email").then((response) => {
+      console.log("response.data.message: ", response.data.emails);
       setEmail(response.data.emails);
     });
   }, []);

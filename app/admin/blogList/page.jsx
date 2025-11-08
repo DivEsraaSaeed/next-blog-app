@@ -1,28 +1,28 @@
 "use client";
 import { useState, useEffect } from "react";
-import BlogTableItem from "/Components/AdminComponents/BlogTableItem";
-import { blog_data } from "/Assets/assets";
 import axios from "axios";
+import BlogTableItem from "@/Components/AdminComponents/BlogTableItem";
+import { toast } from "react-toastify";
 
 const Page = () => {
-  const [blogs, setBlogs] = useState([...blog_data]);
+  const [blogs, setBlogs] = useState([]);
   const fetchBlogs = async () => {
     const response = await axios.get("/api/blog");
     setBlogs(response.data.blogs);
-    console.log(response.data.blogs);
   };
   const deleteBlog = async (mongoId) => {
-    const response = await axios.delete("/app/api/blog", {
+    console.log('mongoId: ', mongoId);
+    const response = await axios.delete("/api/blog", {
       params: { id: mongoId },
     });
-    // console.log(response.data.message);
     toast.success(response.data.message);
     fetchBlogs();
   };
 
   useEffect(() => {
     axios.get("/api/blog").then((response) => {
-    setBlogs(response.data.blogs);
+      setBlogs(response.data.blogs);
+      console.log("response.data.blogs: ", response.data.blogs);
     });
   }, []);
   return (
@@ -47,20 +47,23 @@ const Page = () => {
             </tr>
           </thead>
           <tbody>
-            {blogs.map((item, index) => {
-              return (
-                <BlogTableItem
-                  key={index}
-                  mongoId={item._id}
-                  authorImg={item.authorImg}
-                  title={item.title}
-                  author={item.author}
-                  date={item.date}
-                  deleteBlog={deleteBlog}
-                />
-              );
-            })}
-            <BlogTableItem />
+            {blogs?.length > 0 ? (
+              blogs.map((item, index) => {
+                return (
+                  <BlogTableItem
+                    key={index}
+                    mongoId={item._id}
+                    authorImg={item.authorImg}
+                    title={item.title}
+                    author={item.author}
+                    date={item.date}
+                    deleteBlog={deleteBlog}
+                  />
+                );
+              })
+            ) : (
+              <BlogTableItem />
+            )}
           </tbody>
         </table>
       </div>

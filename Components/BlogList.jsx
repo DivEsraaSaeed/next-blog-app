@@ -1,17 +1,21 @@
-import { blog_data } from "@/Assets/assets";
-import React, { useEffect } from "react";
+import { useEffect, useState } from "react";
 import BlogItem from "./BlogItem";
 import axios from "axios";
 
 const BlogList = () => {
-  const [menu, setMenu] = React.useState("All");
-  const [blogs, setBlogs] = React.useState([...blog_data]);
+  const [menu, setMenu] = useState("All");
+  const [blogs, setBlogs] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [message, setMessage] = useState("");
 
-  
   useEffect(() => {
-    axios.get("/api/blog").then((response) => {
-       setBlogs(response.data.blogs);
-     })
+    axios
+      .get("/api/blog")
+      .then((response) => {
+        setBlogs(response.data.blogs);
+      })
+      .catch((error) => setMessage("حصل خطأ ما، حاول مرة أخرى"))
+      .finally(() => setLoading(false));
   }, []);
 
   return (
@@ -56,21 +60,34 @@ const BlogList = () => {
           Startup
         </button>
       </div>
+      {/* show error message */}
+
+      {message && <p className="text-center text-red-500">{message}</p>}
       <div className="flex flex-wrap justify-around  gap-1 gap-y-10 mb-16 xl:mx-24">
-        {blogs
-          .filter((item) => (menu === "All" ? true : item.category === menu))
-          .map((item, index) => {
-            return (
-              <BlogItem
-                key={index}
-                id={item._id}
-                title={item.title}
-                description={item.description}
-                category={item.category}
-                image={item.image}
-              />
-            );
-          })}
+        {!loading ? (
+          blogs.length > 0 ? (
+            blogs
+              .filter((item) =>
+                menu === "All" ? true : item.category === menu
+              )
+              .map((item, index) => {
+                return (
+                  <BlogItem
+                    key={index}
+                    id={item._id}
+                    title={item.title}
+                    description={item.description}
+                    category={item.category}
+                    image={item.image}
+                  />
+                );
+              })
+          ) : (
+            <p className="text-center">No blog found</p>
+          )
+        ) : (
+          <p className="text-center">loading blogs...</p>
+        )}
       </div>
     </div>
   );

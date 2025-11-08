@@ -9,7 +9,7 @@ const loadDB = async () => {
 };
 loadDB();
 // const a="ahmed";
-const body = { title: "b", description: "test description" };
+// const body = { title: "b", description: "test description" };
 // const title = body.title;
 
 // const alaa = body.description;  // accessing description property
@@ -23,6 +23,8 @@ const body = { title: "b", description: "test description" };
 
 //api endpoint to get all blogs
 export async function GET(request) {
+  const { searchParams } = new request(req.url);
+
   const blogId = request.nextUrl.searchParams.get("id");
 
   if (blogId) {
@@ -48,7 +50,6 @@ export async function POST(request) {
   const imageByteData = await image.arrayBuffer();
   const buffer = Buffer.from(imageByteData);
   const path = `./public/${timestamp}-${image.name}`;
-  console.log(formData.get("authorImg"));
   await fs.promises.writeFile(path, buffer);
   const imgUrl = `/${timestamp}-${image.name}`;
   //   console.log(imgUrl)
@@ -61,7 +62,6 @@ export async function POST(request) {
     author_img: `${formData.get("authorImg")}`,
   };
   await BlogModel.create(blogData);
-  console.log("blog saved");
   return NextResponse.json({
     // respond to the frontend-side
     success: true,

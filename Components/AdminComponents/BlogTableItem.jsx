@@ -2,7 +2,14 @@ import { assets } from "@/Assets/assets";
 import Image from "next/image";
 import React from "react";
 
-const BlogTableItem = ({ authorImg, title ,author ,date ,mongoId,deleteBlog}) => {
+const BlogTableItem = ({
+  authorImg,
+  title,
+  author,
+  date,
+  mongoId,
+  deleteBlog,
+}) => {
   const blogdate = new Date(date);
   return (
     <tr className="bg-white border-b">
@@ -24,7 +31,12 @@ const BlogTableItem = ({ authorImg, title ,author ,date ,mongoId,deleteBlog}) =>
         {title ? title : "no title"}
         {blogdate.toDateString()}
       </td>
-      <td onClick={()=>deleteBlog(mongoId)} className="px-6 py-4 cursor-pointer">x</td>
+      <td
+        onClick={() => deleteBlog(mongoId)}
+        className="px-6 py-4 cursor-pointer"
+      >
+        x
+      </td>
     </tr>
   );
 };
